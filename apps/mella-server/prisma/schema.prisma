@@ -1,0 +1,100 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id          String             @id @default(cuid())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  title       String?
+  description String?
+  typeField   EnumPostTypeField?
+  content     String?
+  media       Json?
+  user        User?              @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Job {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  title          String?
+  description    String?
+  requiredSkills String?
+  salary         Float?
+  location       String?
+  user           User?    @relation(fields: [userId], references: [id])
+  userId         String?
+}
+
+model Message {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  content   String?
+  sentTo    String?
+  timestamp DateTime?
+  sentBy    String?
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  description String?
+  price       Float?
+  category    String?
+  location    String?
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model House {
+  id            String                  @id @default(cuid())
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  address       String?
+  description   String?
+  price         Float?
+  typeField     EnumHouseTypeField?
+  forSaleOrRent EnumHouseForSaleOrRent?
+  location      String?
+  user          User?                   @relation(fields: [userId], references: [id])
+  userId        String?
+}
+
+model User {
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  firstName      String?
+  lastName       String?
+  username       String    @unique
+  email          String?   @unique
+  password       String
+  roles          Json
+  profilePicture Json?
+  posts          Post[]
+  products       Product[]
+  houses         House[]
+  jobs           Job[]
+}
+
+enum EnumPostTypeField {
+  Option1
+}
+
+enum EnumHouseTypeField {
+  Option1
+}
+
+enum EnumHouseForSaleOrRent {
+  Option1
+}
